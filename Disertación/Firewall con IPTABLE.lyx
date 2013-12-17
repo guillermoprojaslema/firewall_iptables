@@ -1,0 +1,606 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usetheme{Warsaw} % Beamer Theme
+\setbeamercolor{structure}{fg=red!90!black}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language spanish
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Creación de un Firewall
+\end_layout
+
+\begin_layout Subtitle
+a través de IPTable
+\end_layout
+
+\begin_layout Author
+Claudio Acuña; Cristian Garrido; Guillermo Rojas; Ricardo Soto
+\end_layout
+
+\begin_layout Institute
+Universidad Tecnológica Metropolitana
+\begin_inset Newline newline
+\end_inset
+
+Facultad de Ingeniería
+\begin_inset Newline newline
+\end_inset
+
+Departamento de Computación y Informática.
+\end_layout
+
+\begin_layout BeginFrame
+Índice
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Marco Teórico.
+\end_layout
+
+\begin_layout Subsection
+Marco Teórico.
+\end_layout
+
+\begin_layout BeginFrame
+Marco Teórico
+\end_layout
+
+\begin_layout Standard
+Un cortafuegos (firewall en inglés) es una parte de un sistema o una red
+ que está diseñada para bloquear el acceso no autorizado, permitiendo al
+ mismo tiempo comunicaciones autorizadas.
+ Se trata de un dispositivo o conjunto de dispositivos configurados para
+ permitir, limitar, cifrar, descifrar, el tráfico entre los diferentes ámbitos
+ sobre la base de un conjunto de normas y otros criterios.
+ Los cortafuegos se utilizan con frecuencia para evitar que los usuarios
+ de Internet no autorizados tengan acceso a redes privadas conectadas a
+ Internet, especialmente intranets.
+\end_layout
+
+\begin_layout BeginFrame
+Marco Teórico
+\end_layout
+
+\begin_layout Standard
+Todos los mensajes que entren o salgan de la intranet pasan a través del
+ cortafuegos, que examina cada mensaje y bloquea aquellos que no cumplen
+ los criterios de seguridad especificados.
+ También es frecuente conectar al cortafuegos a una tercera red, llamada
+ «zona desmilitarizada» o DMZ, en la que se ubican los servidores de la
+ organización que deben permanecer accesibles desde la red exterior.
+\end_layout
+
+\begin_layout Section
+Modelamiento
+\end_layout
+
+\begin_layout Subsection
+Modelamiento
+\end_layout
+
+\begin_layout BeginFrame
+Modelamiento
+\end_layout
+
+\begin_layout Standard
+Hoy en dia un firewall es un hardware especifico con un sistema operativo
+ o una IOS que filtra el tráfico TCP/UDP/ICMP/../IP y decide si un paquete
+ pasa, se modifica, se convierte o se descarta.
+ Para que un firewall entre redes funcione como tal debe tener al menos
+ dos tarjetas de red.
+\end_layout
+
+\begin_layout BeginFrame
+Modelamiento
+\end_layout
+
+\begin_layout Standard
+Esquema típico de firewall para proteger una red local conectada a internet
+ a través de un router.
+ El firewall debe colocarse entre el router (con un único cable) y la red
+ local (conectado al switch o al hub de la LAN)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Firewall1.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Esquema de firewall típico entre red local e internet
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Modelamiento
+\end_layout
+
+\begin_layout Standard
+Dependiendo de las necesidades de cada red, puede ponerse uno o más firewalls
+ para establecer distintos perímetros de seguridad en torno a un sistema.
+ Es frecuente también que se necesite exponer algún servidor a internet
+ (como es el caso de un servidor web, un servidor de correo, etc..), y en
+ esos casos obviamente en principio se debe aceptar cualquier conexión a
+ ellos.
+ Lo que se recomienda en esa situación es situar ese servidor en lugar aparte
+ de la red, el que denominamos DMZ o zona desmilitarizada.
+ El firewall tiene entonces tres entradas.
+\end_layout
+
+\begin_layout BeginFrame
+Modelamiento
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Firewall2.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Esquema de firewall entre red local e internet con zona DMZ para servidores
+ expuestos 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Modelamiento
+\end_layout
+
+\begin_layout Standard
+En la zona desmilitarizada se pueden poner tantos servidores como se necesiten.
+ Con esta arquitectura, permitimos que el servidor sea accesible desde internet
+ de tal forma que si es atacado y se gana acceso a él, la red local sigue
+ protegida por el firewall.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Firewall3.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Esquema de firewall entre red local e internet con zona DMZ para servidores
+ expuestos creado con doble firewall(perímetro)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Modelamiento
+\end_layout
+
+\begin_layout Standard
+Los firewalls se pueden usar en cualquier red.
+ Es habitual tenerlos como protección de internet en las empresas, aunque
+ ahí también suelen tener una doble función: controlar los accesos externos
+ hacia dentro y también los internos hacia el exterior; esto último se hace
+ con el firewall o frecuentemente con un proxy (que también utilizan reglas,
+ aunque de más alto nivel).
+ También, en empresas de hosting con muchos servidores alojados lo normal
+ es encontrarnos uno o más firewalls ya sea filtrando toda la instalación
+ o parte de ella.
+\end_layout
+
+\begin_layout BeginFrame
+Modelamiento
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Firewall4.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Esquema de firewall entre redes, en la que solo se filtra y no se hace NAT
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Capacity Planning
+\end_layout
+
+\begin_layout Subsection
+Capacity Planning
+\end_layout
+
+\begin_layout BeginFrame
+Capacity Planning
+\end_layout
+
+\begin_layout Standard
+Nuestra capacidad abarcar la producción solicitada, es calculada a través
+ de puntos de función.
+ Basándonos en nuestra experiencia, hemos calculado que existen aproximadamente
+ 15 puntos de función, ergo la capacidad es calculada de la siguiente manera.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Structure
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+Puntos\, de\, funciones/dia=0,30
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Rendimiento=0,80
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Eficiencia=0,75
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+N\text{º}\, de\, personas\, encargadas=4
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+N\text{º}\, de\, horas\, productivas\, diarias=2
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Capacity Planning
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Structure
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+(0,3\times0,8\times0,75\times2\times4=1,44\, PF/Dia)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+10,41\, dias\,\rightarrow2\, semanas\,(sin\, incluir\, fines\, de\, semana)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Tunning
+\end_layout
+
+\begin_layout Subsection
+Tunning
+\end_layout
+
+\begin_layout BeginFrame
+Tunning
+\end_layout
+
+\begin_layout Standard
+Cada servidor de seguridad es diferente y tiene diferentes capacidades,
+ pero vamos a echar un vistazo a tres áreas comunes que no reciben ninguna
+ atención cuando estás en un apuro, pero que pueden mejorar su seguridad
+ y la conciencia sobre la seguridad.
+\end_layout
+
+\begin_layout BeginFrame
+MONITOR Y BLOQUE DE SALIDA DE LA RED DE TRÁFICO
+\end_layout
+
+\begin_layout Standard
+El ejemplo más sencillo es SMTP saliente.
+ En una empresa típica, es el único sistema que debe ser usado legítimamente
+ para el envío de correo electrónico de la red de la empresa es el servidor
+ de correo de la empresa, ya sea Exchange o algún otro producto.
+ 
+\end_layout
+
+\begin_layout Standard
+Hay raramente existe alguna razón para dejar que la gente dentro de la red
+ hacen conexiones SMTP salientes directamente desde sus escritorios o portátiles.
+ La razón más grande para bloquear el tráfico SMTP saliente de los usuarios
+ finales es bloquear los ordenadores infectados de actuar como robots de
+ spam.
+ .
+ 
+\end_layout
+
+\begin_layout BeginFrame
+MONITOR Y BLOQUE DE SALIDA DE LA RED DE TRÁFICO
+\end_layout
+
+\begin_layout Standard
+Si bloquea el tráfico SMTP saliente a todos menos a su servidor de correo
+ electrónico oficial, usted ayudará a neutralizar los efectos negativos
+ de los ordenadores infectados.
+ 
+\end_layout
+
+\begin_layout Standard
+Control de correo saliente es el fruto maduro, pero hay otros beneficios
+ a ser más estrictos en el tráfico saliente.
+ ¿Debería utilizar la gente su interna DNS o servidores NTP ? ¿Tiene dispositivo
+s como impresoras o UPSes que nunca se debe de hablar con el Internet? 
+\end_layout
+
+\begin_layout BeginFrame
+SYSLOG FILTROS DE CRÍTICA DE DATOS DE REGISTRO DE FIREWALL
+\end_layout
+
+\begin_layout Standard
+Los Firewalls generan toneladas de datos sobre lo que está ocurriendo en
+ su red, y es probable que no están mirando a nada de eso.
+ La razón es probablemente pragmático: no se puede separar el trigo de la
+ paja.
+ ¿Lo que es interesante, y lo que no lo es? ¿Qué debe mirar y qué se puede
+ saltar?
+\end_layout
+
+\begin_layout BeginFrame
+CONTROLES DE VELOCIDAD EXCESIVA DE LIMITACIÓN DE ENTRADA
+\end_layout
+
+\begin_layout Standard
+Por ejemplo, el servidor de correo de una empresa del mercado medio puede
+ ver alrededor de 1.000.000 conexiones entrantes (de Internet) al día, contando
+ las conexiones de spam, si cada uno de 1.000 empleados recibieron 100 mensajes
+ al día.
+ Eso es alrededor de 10 conexiones por segundo.
+ 
+\end_layout
+
+\begin_layout Standard
+Configurar su firewall para bloquear las conexiones entrantes más de 20
+ por segundo y tanto puede reducir la cantidad de spam que tienes y asegurar
+ su propio servidor de correo no consigue una repentina de correo no puede
+ manejar.
+ 
+\end_layout
+
+\begin_layout BeginFrame
+Ventajas
+\end_layout
+
+\begin_layout Itemize
+Protección de información privada: Define que usuarios de la red y qué informaci
+ón va a obtener cada uno de ellos.
+ 
+\end_layout
+
+\begin_layout Itemize
+Optimización de acceso: Define de manera directa los protocolos a utilizarse
+ 
+\end_layout
+
+\begin_layout Itemize
+Protección de intrusos: Protege de intrusos externos restringiendo los accesos
+ a la red.
+\end_layout
+
+\begin_layout Section
+Conclusiones
+\end_layout
+
+\begin_layout Subsection
+Conclusiones
+\end_layout
+
+\begin_layout BeginFrame
+Conclusión
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_body
+\end_document
