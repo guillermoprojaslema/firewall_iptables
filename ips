@@ -1,0 +1,21 @@
+
+---------------------CONFIGURACIÓN FIREWALL------------------------------------------
+Firewall tiene 3 adaptadores  eth0(Internet Automatico No Tocar), eth1(LAN 192.168.10.1) MASCARA(24) Puerta Enlace  (192.168.10.2).
+Dns se usan en todas la maquinas, se extrae del firewall, con los siguientes comandos (cat /etc/resolv.conf).
+eth2 (SERVER  192.168.3.1) Mascara(24) Puerta Enlace(192.168.3.2).
+----------------------------------------------------------------------------------------------------
+
+---------------------CONFIGURACIÓN LAN-----------------------------------------------
+
+1 Adaptador eth0 se configura, IP: 192.168.10.2, MASCARA: 24, Puerta Enlace: 192.168.10.1 
+DNS sera la misma que se coloco en el firewall.
+
+--------------------------------------------------------------------------------------
+
+
+-------------------CONFIGURACIÓN SERVER----------------------------------------------
+
+1 Adaptador eth0 se configura, IP: 192.168.3.2, MASCARA: 24, Puerta Enlace: 192.168.3.1 
+DNS sera la misma que se coloco en el firewall.
+
+-------------------------------------------------------------------------------------
