@@ -20,6 +20,17 @@ iptables -P FORWARD ACCEPT
 iptables -t nat -P PREROUTING ACCEPT
 iptables -t nat -P POSTROUTING ACCEPT
 
+# Ahora hacemos enmascaramiento de la red local y de la DMZ
+# para que puedan salir haca fuera
+# y activamos el BIT DE FORWARDING (imprescindible!!!!!)
+iptables -t nat -A POSTROUTING 	-o eth0 -j MASQUERADE
+iptables -A INPUT -s 192.168.10.0/24 -i eth1 -j ACCEPT
+iptables -A INPUT -s 192.168.3.0/24 -i eth2 -j ACCEPT
+
+# Con esto permitimos hacer forward de paquetes en el firewall, o sea
+# que otras máquinas puedan salir a traves del firewall.
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
 ## Empezamos a filtrar
 ## Nota: eth0 es el interfaz conectado al router y eth1 a la LAN
 # Todo lo que venga por el exterior y vaya al puerto 80 lo redirigimos
@@ -36,15 +47,7 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j DNAT --to 192.168.3.
 # Al firewall tenemos acceso desde la red local
 iptables -A INPUT -s 192.168.10.0/24 -i eth1 -j ACCEPT
 
-# Ahora hacemos enmascaramiento de la red local y de la DMZ
-# para que puedan salir haca fuera
-# y activamos el BIT DE FORWARDING (imprescindible!!!!!)
-iptables -t nat -A POSTROUTING -s 192.168.10.0/24 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.3.0/24 -o eth0 -j MASQUERADE
 
-# Con esto permitimos hacer forward de paquetes en el firewall, o sea
-# que otras máquinas puedan salir a traves del firewall.
-echo 1 > /proc/sys/net/ipv4/ip_forward
 
 ## Permitimos el paso de la DMZ a una BBDD de la LAN:
 iptables -A FORWARD -s 192.168.3.2 -d 192.168.10.5 -p tcp --dport 5432 -j ACCEPT
