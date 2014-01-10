@@ -1,0 +1,10 @@
+Primero veremos nuestra DNS para usarla en todas las maquinas
+
+cat /etc/resolv.conf
+
+Luego usamos las siguientes reglas para compartir Internet
+
+iptables -t nat -A POSTROUTING 	-o eth0 -j MASQUERADE
+iptables -A INPUT -s 192.168.10.0/24 -i eth1 -j ACCEPT
+iptables -A INPUT -s 192.168.3.0/24 -i eth2 -j ACCEPT
+echo "1" > /proc/sys/net/ipv4/ip_forward
