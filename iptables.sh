@@ -65,17 +65,21 @@ iptables -A FORWARD -s 192.168.3.2 -d 192.168.10.0/24 -p tcp --sport 3389 --dpor
 iptables -A FORWARD -s 192.168.3.0/24 -d 192.168.10.0/24 -j DROP
 
 ## Cerramos el acceso de la DMZ al propio firewall
-iptables -A INPUT -s 192.168.3.0/24 -i eth2 -j DROP
+iptables -A INPUT -s 192.168.3.0/24 -i eth2 -j ACCEPT
 
 ## Y ahora cerramos los accesos indeseados del exterior:
 # Nota: 0.0.0.0/0 significa: cualquier red
 
 # Cerramos el rango de puerto bien conocido
-iptables -A INPUT -s 0.0.0.0/0 -p tcp -dport 1:1024 -j DROP
-iptables -A INPUT -s 0.0.0.0/0 -p udp -dport 1:1024 -j DROP
+#iptables -A INPUT -s 0.0.0.0/0 -p tcp -dport 1:1024 -j DROP
+#iptables -A INPUT -s 0.0.0.0/0 -p udp -dport 1:1024 -j DROP
 
 # Cerramos un puerto de gestión: webmin
-iptables -A INPUT -s 0.0.0.0/0 -p tcp -dport 10000 -j DROP
+#iptables -A INPUT -s 0.0.0.0/0 -p tcp -dport 10000 -j DROP
+
+#Bloqueo de facebook en la DMZ
+# d: fuende de destino -s: fuente de origen 
+iptables -I FORWARD -d 192.168.3.0/24 - tcp -m string --string "facebook.com" --algo kmp -j DROP
 
 echo " OK . Verifique que lo que se aplica con: iptables -L -n"
 
